@@ -146,3 +146,69 @@ class TestCardFunctions(unittest.TestCase):
         # Top should go from 0 to 0
         # Bottom should go from 1 to 2
         self.assertRaises(ValueError, self.test_card.turn_card, 0)
+
+
+class TestStackInitialisation(unittest.TestCase):
+    def setUp(self):
+        self.Input_data = {'Card_number_of_holes': 4,
+                           'Threading_directions': ['LTR', 'LTR'],
+                           'Thread_colours': [['Red', 'Blue', 'Yellow', 'White'], ['R', 'B', 'Y', 'W']],
+                           'Thread_types': [['cotton', 'cotton', 'cotton', 'cotton'],
+                                            ['cotton', 'cotton', 'cotton', 'cotton']]}
+
+    def test_passes_with_expected_input(self):
+        card_stack = pattern_draft_to_output.Stack(self.Input_data)
+        self.assertEqual(len(card_stack.card_stack), 2)
+
+    def test_stack_raises_typeerror_if_input_is_str(self):
+        self.assertRaises(TypeError, pattern_draft_to_output.Stack, 'AAA')
+
+    def test_stack_raises_typeerror_if_input_is_a_list(self):
+        self.assertRaises(TypeError, pattern_draft_to_output.Stack, ['AAA'])
+
+    def test_stack_raises_typeerror_if_input_is_int(self):
+        self.assertRaises(TypeError, pattern_draft_to_output.Stack, 444)
+
+
+class TestStackFunctions(unittest.TestCase):
+    def setUp(self):
+        self.Input_data = {'Card_number_of_holes': 4,
+                           'Threading_directions': ['LTR', 'LTR'],
+                           'Thread_colours': [['Red', 'Blue', 'Yellow', 'White'], ['R', 'B', 'Y', 'W']],
+                           'Thread_types': [['cotton', 'cotton', 'cotton', 'cotton'],
+                                            ['cotton', 'cotton', 'cotton', 'cotton']]}
+        self.card_stack = pattern_draft_to_output.Stack(self.Input_data)
+
+    def test_turn_card_set_errors_with_cards_int(self):
+        self.assertRaises(TypeError, self.card_stack.turn_card_set, 7, 1)
+
+    def test_turn_card_set_errors_with_cards_float(self):
+        self.assertRaises(TypeError, self.card_stack.turn_card_set, 7.7, 1)
+
+    def test_turn_card_set_errors_with_cards_str(self):
+        self.assertRaises(TypeError, self.card_stack.turn_card_set, '7', 1)
+
+    def test_turn_card_set_errors_with_cards_greater_than_stack_length(self):
+        self.assertRaises(ValueError, self.card_stack.turn_card_set, [0, 1, 2], 1)
+
+    def test_turn_card_set_errors_with_cards_negative(self):
+        self.assertRaises(ValueError, self.card_stack.turn_card_set, [-1, 0, 1], 1)
+
+    def test_turn_card_set_away(self):
+        self.card_stack.turn_card_set([1], 1)
+
+    def test_turn_card_set_towards(self):
+        self.card_stack.turn_card_set([1], -1)
+
+    def test_turn_all_cards_away(self):
+        self.card_stack.turn_all_cards(1)
+
+    def test_turn_all_cards_towards(self):
+        self.card_stack.turn_all_cards(-1)
+
+    def test_weft(self):
+        top_cols, top_typs, bottom_cols, bottom_typs = self.card_stack.weft()
+        self.assertEqual(top_cols, ['Red', 'R'])
+        self.assertEqual(top_typs, ['cotton', 'cotton'])
+        self.assertEqual(bottom_cols, ['Blue', 'B'])
+        self.assertEqual(bottom_typs, ['cotton', 'cotton'])
