@@ -1,4 +1,4 @@
-from pattern_draft_to_output import Stack, accumulate_pattern
+from from_pattern_draft.pattern_draft_to_output import Stack, accumulate_pattern
 
 Input_data = {'Card_number_of_holes': 4,
               'Threading_directions': ['LTR', 'LTR'],
