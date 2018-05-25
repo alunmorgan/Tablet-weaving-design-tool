@@ -29,5 +29,4 @@ INPUT_DATA = {'Card_number_of_holes': 4,
 
 output_pattern = accumulate_pattern(input_data=INPUT_DATA)
 
-print(top_pattern_colours)
-
+static_pattern_output.display_summary(output_pattern=output_pattern, input_data=INPUT_DATA)
