@@ -1,4 +1,4 @@
-from from_pattern_draft.pattern_draft_to_output import Stack, accumulate_pattern, convert_turns_to_numeric
+from from_pattern_draft.pattern_draft_to_output import accumulate_pattern
 from graphics_weaving import static_pattern_output
 
 
@@ -23,8 +23,8 @@ INPUT_DATA = {'Card_number_of_holes': 4,
                                ['cotton', 'cotton', 'cotton', 'cotton']
                                ],
               'Turning_instructions': [['away'], ['away'], ['away'], ['away'], ['away'], ['away'], ['away'], ['away'],
-                                       ['towards'],['towards'],['towards'],['towards'],['towards'],['towards'],
-                                       ['towards'],['towards']]
+                                       ['towards'], ['towards'], ['towards'], ['towards'], ['towards'], ['towards'],
+                                       ['towards'], ['towards']]
               }
 
 output_pattern = accumulate_pattern(input_data=INPUT_DATA)
