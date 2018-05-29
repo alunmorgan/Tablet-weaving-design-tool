@@ -99,10 +99,36 @@ class Stack:
         return top_cols, top_typs, bottom_cols, bottom_typs
 
 
-def accumulate_pattern(card_stack, top_pattern_colours, top_pattern_types, bottom_pattern_colours, bottom_pattern_types):
-    tc, tt, bc, bt = card_stack.weft()
-    top_pattern_colours.append(tc)
-    top_pattern_types.append(tt)
-    bottom_pattern_colours.append(bc)
-    bottom_pattern_types.append(bt)
-    return top_pattern_colours, top_pattern_types, bottom_pattern_colours, bottom_pattern_types
+def accumulate_pattern(input_data):
+    top_pattern_colours = []
+    top_pattern_types = []
+    bottom_pattern_colours = []
+    bottom_pattern_types = []
+
+    card_stack = Stack(input_data)
+    for turn_instruction in input_data['Turning_instructions']:
+        if len(turn_instruction) == 1:
+            card_stack.turn_all_cards(convert_turns_to_numeric(turn_instruction[0]))
+        else:
+            card_index = 0
+            for individual_card in turn_instruction:
+                card_stack.turn_card_set([card_index], convert_turns_to_numeric(individual_card))
+                card_index += 1
+        tc, tt, bc, bt = card_stack.weft()
+        top_pattern_colours.append(tc)
+        top_pattern_types.append(tt)
+        bottom_pattern_colours.append(bc)
+        bottom_pattern_types.append(bt)
+    return {'top_cols': top_pattern_colours,
+            'top_types': top_pattern_types,
+            'bottom_cols': bottom_pattern_colours,
+            'bottom_types': bottom_pattern_types}
+
+
+def convert_turns_to_numeric(turn_string):
+    if turn_string.casefold() == 'away'.casefold():
+        return 1
+    elif turn_string.casefold() == 'toward'.casefold() or turn_string.casefold() == 'towards'.casefold():
+        return -1
+    else:
+        raise ValueError('Turn instructions must be away or toward(s)')
