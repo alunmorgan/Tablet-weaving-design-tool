@@ -8,4 +8,4 @@ script:
   - xvfb-run coverage run -m unittest discover
   
 after_success:
-  - coveralls
+  - coveralls --service=travis-ci
