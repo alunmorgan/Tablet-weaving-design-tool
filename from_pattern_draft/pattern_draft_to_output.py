@@ -1,3 +1,7 @@
+import json
+import os
+import tkinter
+from tkinter import messagebox
 
 
 class Card:
@@ -61,15 +65,15 @@ class Card:
 
 class Stack:
 
-    def __init__(self, Input_data):
+    def __init__(self, input_data):
         self.card_stack = {}
 
-        for card_index in range(len(Input_data['Threading_directions'])):
-            self.card_stack['card%s' % card_index] = Card(number_of_holes=Input_data['Card_number_of_holes'],
-                                                     threading_direction=Input_data['Threading_directions'][card_index],
-                                                     list_of_thread_colours=Input_data['Thread_colours'][card_index],
-                                                     list_of_thread_types=Input_data['Thread_types'][card_index]
-                                                     )
+        for card_index in range(len(input_data['Threading_directions'])):
+            self.card_stack['card%s' % card_index] = Card(number_of_holes=input_data['Card_number_of_holes'],
+                                                          threading_direction=input_data['Threading_directions'][card_index],
+                                                          list_of_thread_colours=input_data['Thread_colours'][card_index],
+                                                          list_of_thread_types=input_data['Thread_types'][card_index]
+                                                          )
 
     def turn_card_set(self, cards, direction):
         if not isinstance(cards, list):
@@ -132,3 +136,26 @@ def convert_turns_to_numeric(turn_string):
         return -1
     else:
         raise ValueError('Turn instructions must be away or toward(s)')
+
+
+def import_data(data_location, data_file):
+    input_file = open(os.path.join(data_location, "%s.json" % data_file))
+    return json.load(input_file)
+
+
+def export_data(input_data, save_location, save_name):
+    full_path = os.path.join(save_location, "%s.json" % save_name)
+    if os.path.exists(full_path):
+        if messagebox.askyesno("File exists", "Would you like to overwrite the file?"):
+            save_data_file(input_data, full_path)
+            print("File saved: %s" % full_path)
+        else:
+            print('Save aborted by user')
+    else:
+        save_data_file(input_data, full_path)
+
+
+def save_data_file(input_data, full_path):
+    save_file = open(full_path, "w")
+    json.dump(input_data, save_file, indent=4)
+    save_file.close()
