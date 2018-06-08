@@ -110,7 +110,7 @@ def display_pattern_draft(input_data, prepared_window, block_length, block_width
 def regularise_turning_instructions(input_instructions, number_of_cards):
     """ If a turning instruction is just away or toward then is applies to all cards.
         Otherwise the instruction should be a list of length number of cards.
-        This function expands the single value instuctions to be lists of length number of cards so that all
+        This function expands the single value instructions to be lists of length number of cards so that all
         entries have the same shape. Also changes the strings to be white for away and black for towards"""
     if not isinstance(number_of_cards, int):
         raise TypeError('number of cards needs to be an int')
@@ -119,16 +119,13 @@ def regularise_turning_instructions(input_instructions, number_of_cards):
     regularised_output = []
     for instruction in input_instructions:
         if len(instruction) == 1:
-            output_value = convert_numeric_to_colours(convert_turns_to_numeric(instruction[0]))
+            output_value = instruction[0]
             temp_instruction = []
             for n_card in range(number_of_cards):
                 temp_instruction.append(output_value)
             regularised_output.append(temp_instruction)
         elif len(instruction) == number_of_cards:
-            output_lst = []
-            for n_card in range(number_of_cards):
-                output_lst.append(convert_numeric_to_colours(convert_turns_to_numeric(instruction)))
-            regularised_output.append(output_lst)
+            regularised_output.append(instruction)
         else:
             raise ValueError('The number of turning instructions does not match the number of cards.')
     return regularised_output

@@ -110,7 +110,7 @@ def accumulate_pattern(input_data):
     bottom_pattern_types = []
 
     card_stack = Stack(input_data)
-    for turn_instruction in input_data['Turning_instructions']:
+    for turn_instruction in input_data['Turning_instructions'] + input_data['Turning_instructions']:
         if len(turn_instruction) == 1:
             card_stack.turn_all_cards(convert_turns_to_numeric(turn_instruction[0]))
         else:
