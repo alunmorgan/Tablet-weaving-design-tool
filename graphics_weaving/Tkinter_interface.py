@@ -36,18 +36,25 @@ class Interface:
         self.num_cards = 8
         self.length_turning_instructions = 16
 
-        Label(text="Hello").grid(column=0, row=0)
+        welcome = Label(self.window, text="Hello", fg='white')
+        welcome.grid(column=0, row=0)
         load_btn = Button(self.window, text="Load pattern", command=self.load_clicked)
         load_btn.grid(column=2 * self.length_turning_instructions + 1, row=0)
         save_btn = Button(self.window, text="Save pattern", command=self.save_clicked)
         save_btn.grid(column=2 * self.length_turning_instructions + 1, row=1)
         set_dir_btn = Button(self.window, text="Set patterns directory", command=self.set_pattern_files_location)
         set_dir_btn.grid(column=2 * self.length_turning_instructions + 1, row=2)
+        num_cards_label = Label(self.window, text='number of cards', fg='white')
+        num_cards_label.grid(column=2 * self.length_turning_instructions + 1, row=4)
         self.num_cards_spinbox = Spinbox(self.window, from_=2, to=20)
-        self.num_cards_spinbox.grid(column=2 * self.length_turning_instructions + 1, row=4)
-        num_cards_update_btn = Button(self.window, text="Reset with new number of cards",
-                                      command=self.change_number_of_cards)
-        num_cards_update_btn.grid(column=2 * self.length_turning_instructions + 1, row=3)
+        self.num_cards_spinbox.grid(column=2 * self.length_turning_instructions + 1, row=5)
+        num_holes_label = Label(self.window, text='number of holes', fg='white')
+        num_holes_label.grid(column=2 * self.length_turning_instructions + 1, row=6)
+        self.num_holes_spinbox = Spinbox(self.window, from_=3, to=8)
+        self.num_holes_spinbox.grid(column=2 * self.length_turning_instructions + 1, row=7)
+        cards_update_btn = Button(self.window, text="Reset with new cards settings", command=self.change_cards)
+        cards_update_btn.grid(column=2 * self.length_turning_instructions + 1, row=3)
+
         self.display_input_grids()
         self.window.mainloop()
 
@@ -91,9 +98,12 @@ class Interface:
     def set_pattern_files_location(self):
         return filedialog.askdirectory()
 
-    def change_number_of_cards(self):
+    def change_cards(self):
+        """This re initialises the grids and the input to the requested size."""
         self.num_cards = int(self.num_cards_spinbox.get())
         self.input_data = {}
+        self.input_data['Card_number_of_holes'] = int(self.num_holes_spinbox.get())
+        self.draft_height = self.input_data['Card_number_of_holes']  # This seems an unnecessary variable.
         self.remove_draft_grid()
         self.remove_turning_grid()
         self.remove_output_grids()
@@ -102,7 +112,6 @@ class Interface:
         self.input_data['Threading_directions'] = []
         for card in range(self.num_cards):
             self.input_data['Threading_directions'].append('LTR')
-        self.input_data['Card_number_of_holes'] = 4  # TODO unfix this number
         self.display_output_grids()
 
     def switch_turning_direction(self, arg, squares):
