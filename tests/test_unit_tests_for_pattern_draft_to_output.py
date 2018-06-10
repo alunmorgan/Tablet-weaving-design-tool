@@ -5,7 +5,7 @@ import unittest
 class TestCardInstantiation(unittest.TestCase):
 
     def setUp(self):
-        self.expected_thread_colours = ['RRR', 'BBB', 'YYY', 'WWW']
+        self.expected_thread_colours = [[255, 0, 0], [0, 255, 0], [255, 255, 0], [255, 255, 255]]
         self.expected_thread_types = ['CCC', 'CCC', 'CCC', 'CCC']
         self.expected_number_of_holes = 4
 
@@ -50,13 +50,14 @@ class TestCardInstantiation(unittest.TestCase):
         self.assertRaises(ValueError,
                           pattern_draft_to_output.Card, number_of_holes=self.expected_number_of_holes,
                           threading_direction='LTR',
-                          list_of_thread_colours=['RRR', 'BBB', 'YYY'],
+                          list_of_thread_colours=[[255, 0, 0], [0, 255, 0], [255, 255, 0]],
                           list_of_thread_types=self.expected_thread_types
                           )
         self.assertRaises(ValueError,
                           pattern_draft_to_output.Card, number_of_holes=self.expected_number_of_holes,
                           threading_direction='LTR',
-                          list_of_thread_colours=['RRR', 'BBB', 'YYY', 'WWW', 'XXX'],
+                          list_of_thread_colours=[[255, 0, 0], [0, 255, 0], [255, 255, 0], [255, 255, 255],
+                                                  [111, 111, 111]],
                           list_of_thread_types=self.expected_thread_types
                           )
 
@@ -79,7 +80,8 @@ class TestCardFunctions(unittest.TestCase):
     def setUp(self):
         self.test_card = pattern_draft_to_output.Card(number_of_holes=4,
                                                       threading_direction='LTR',
-                                                      list_of_thread_colours=['Red', 'Blue', 'Yellow', 'White'],
+                                                      list_of_thread_colours=[[255, 0, 0], [0, 255, 0], [255, 255, 0],
+                                                                              [255, 255, 255]],
                                                       list_of_thread_types=['cotton', 'cotton', 'cotton', 'cotton']
                                                       )
 
@@ -152,7 +154,8 @@ class TestStackInitialisation(unittest.TestCase):
     def setUp(self):
         self.Input_data = {'Card_number_of_holes': 4,
                            'Threading_directions': ['LTR', 'LTR'],
-                           'Thread_colours': [['Red', 'Blue', 'Yellow', 'White'], ['R', 'B', 'Y', 'W']],
+                           'Thread_colours': [[[255, 0, 0], [0, 255, 0], [255, 255, 0], [255, 255, 255]],
+                                              [[254, 0, 0], [0, 254, 0], [254, 254, 0], [254, 254, 254]]],
                            'Thread_types': [['cotton', 'cotton', 'cotton', 'cotton'],
                                             ['cotton', 'cotton', 'cotton', 'cotton']]}
 
@@ -174,7 +177,8 @@ class TestStackFunctions(unittest.TestCase):
     def setUp(self):
         self.Input_data = {'Card_number_of_holes': 4,
                            'Threading_directions': ['LTR', 'LTR'],
-                           'Thread_colours': [['Red', 'Blue', 'Yellow', 'White'], ['R', 'B', 'Y', 'W']],
+                           'Thread_colours': [[[255, 0, 0], [0, 0, 255], [255, 255, 0], [255, 255, 255]],
+                                              [[254, 0, 0], [0, 0, 254], [254, 254, 0], [254, 254, 254]]],
                            'Thread_types': [['cotton', 'cotton', 'cotton', 'cotton'],
                                             ['cotton', 'cotton', 'cotton', 'cotton']]}
         self.card_stack = pattern_draft_to_output.Stack(self.Input_data)
@@ -208,9 +212,9 @@ class TestStackFunctions(unittest.TestCase):
 
     def test_weft(self):
         top_cols, top_typs, bottom_cols, bottom_typs = self.card_stack.weft()
-        self.assertEqual(top_cols, ['Red', 'R'])
+        self.assertEqual(top_cols, [[255, 0, 0], [254, 0, 0]])
         self.assertEqual(top_typs, ['cotton', 'cotton'])
-        self.assertEqual(bottom_cols, ['Blue', 'B'])
+        self.assertEqual(bottom_cols, [[0, 0, 255], [0, 0, 254]])
         self.assertEqual(bottom_typs, ['cotton', 'cotton'])
 
 
