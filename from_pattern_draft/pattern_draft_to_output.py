@@ -69,7 +69,7 @@ class Stack:
         self.card_stack = {}
 
         for card_index in range(len(input_data['Threading_directions'])):
-            self.card_stack['card%s' % card_index] = Card(number_of_holes=input_data['Card_number_of_holes'],
+            self.card_stack['card%s' % card_index] = Card(number_of_holes=len(input_data['Thread_colours'][0]),
                                                           threading_direction=input_data['Threading_directions'][card_index],
                                                           list_of_thread_colours=input_data['Thread_colours'][card_index],
                                                           list_of_thread_types=input_data['Thread_types'][card_index]
