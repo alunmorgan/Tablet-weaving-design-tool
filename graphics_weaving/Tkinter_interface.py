@@ -59,6 +59,7 @@ class Interface:
         self.window.mainloop()
 
     def display_input_grids(self):
+        """Convenience function to create all the intial input grids."""
         self.draft_grid_osft = self.header_rows + 1
         self.turning_grid_ofst = self.header_rows + 1 + self.draft_height + 1
         self.output_grid_top_ofst = self.header_rows + 1 + self.draft_height + 1 + self.num_cards + 1
@@ -70,6 +71,7 @@ class Interface:
                                y_offset=self.turning_grid_ofst)
 
     def display_output_grids(self):
+        """Convenience function to update and display both the input grids."""
         self.output_data = accumulate_pattern(input_data=self.input_data)
         self.make_output_grid(x_offset=1, y_offset=self.output_grid_top_ofst, tb_select='Top')
         self.make_output_grid(x_offset=1, y_offset=self.output_grid_bottom_ofst, tb_select='Bottom')
@@ -78,6 +80,8 @@ class Interface:
         print('Save clicked')
 
     def load_clicked(self):
+        """Opens a file dialog and opens the selected json file. Uses the data in the file to update input_data.
+        Then the existing input and output grids are cleared, and new grids are generated based on the new input data"""
         fname = filedialog.askopenfilename(initialdir=self.pattern_dir,
                                            filetypes=(("Pattern files", "*.json"), ("all files", "*.*")))
         json_file = open(fname)
@@ -115,6 +119,8 @@ class Interface:
         self.display_output_grids()
 
     def switch_turning_direction(self, arg, squares):
+        """Flips the button between black and white. Also updates the relevant entry in input_data.
+         Then regenerates the output grids"""
         if squares[arg[0]][arg[1]].cget('bg') == 'black':
             squares[arg[0]][arg[1]].config(bg='white', text='A', fg='black')
             new_val = 'away'
@@ -129,6 +135,8 @@ class Interface:
         self.make_output_grid(x_offset=1, y_offset=self.output_grid_bottom_ofst, tb_select='Bottom')
 
     def select_colour(self, arg, draft):
+        """Sets the button to the selected colour. Also updates the relevant entry in input_data.
+         Then regenerates the output grids"""
         # Bring up a colour selection window
         result = colorchooser.askcolor(title='Please pick a colour')
         draft[arg[0]][arg[1]].config(bg=result[1])
@@ -138,7 +146,13 @@ class Interface:
         self.make_output_grid(x_offset=1, y_offset=self.output_grid_bottom_ofst, tb_select='Bottom')
 
     def make_draft_grid(self, x_offset, y_offset):
-        """Initialises the draft grid of buttons. If there is not input data then an initial data set is regenerated."""
+        """Initialises the draft grid of buttons. If there is no input data then an initial data set is regenerated.
+        If there is no input data then an initial data set is generated.
+
+        Args:
+            x_offset (int): horizontal grid location of the start of the button grid.
+            y_offset (int): vertical grid location of the start of the button grid.
+        """
         Label(self.window, text="Pattern draft").grid(row=y_offset, columnspan=2 * self.length_turning_instructions)
         regen_input = 0
         if 'Thread_colours' not in self.input_data.keys():
@@ -164,7 +178,8 @@ class Interface:
             Grid.rowconfigure(self.window, (y + y_offset + 1), weight=1)
 
     def update_draft_grid(self):
-        """Updates the state of a single button in the pattern draft. Currently only change of colour."""
+        """Updates the state of each button in the pattern draft, based on data in input_data.
+         Currently only change of colour."""
         new_draft = self.input_data['Thread_colours']
         for x in range(self.num_cards):
             for y in range(self.draft_height):
@@ -178,6 +193,13 @@ class Interface:
         self.draft_grid_state = []
 
     def make_turning_grid(self, x_offset, y_offset):
+        """Initialises the turning grid of buttons. If there is no input data then an initial data set is regenerated.
+        If there is no input data then an initial data set is generated.
+
+        Args:
+            x_offset (int): horizontal grid location of the start of the button grid.
+            y_offset (int): vertical grid location of the start of the button grid.
+        """
         Label(self.window, text="Turning instructions").grid(row=y_offset,
                                                              columnspan=2 * self.length_turning_instructions)
         regen_input = 0
@@ -201,6 +223,7 @@ class Interface:
             Grid.rowconfigure(self.window, (y + y_offset + 1), weight=1)
 
     def update_turning_grid(self):
+        """Updates the state of each button in the turning grid, based on data in input_data."""
         for x in range(self.length_turning_instructions):
             for y in range(self.num_cards):
                 bg_col = convert_numeric_to_colours(convert_turns_to_numeric(
@@ -213,12 +236,20 @@ class Interface:
                     raise ValueError('The button colour should be white or black')
 
     def remove_turning_grid(self):
+        """Removes all buttons in the turning grid in preparation for a new one"""
         for x in range(len(self.turning_grid_state)):
             for y in range(len(self.turning_grid_state[0])):
                 self.turning_grid_state[x][y].destroy()
         self.turning_grid_state = []
 
     def make_output_grid(self, x_offset, y_offset, tb_select):
+        """Generate a canvas containing a grid of squares, whose colours depend upon the data in input_data.
+
+        Args:
+            x_offset (int): The horizontal location of the canvas.
+            y_offset (int): The vertical location of the canvas.
+            tb_select (str): Selects between the output for the top surface or the bottom surface.
+            """
         square_size = 25  # size in pixels
         cellwidth = square_size
         cellheight = square_size
@@ -257,6 +288,7 @@ class Interface:
         self.labels[tb_select.casefold()] = lab
 
     def remove_output_grids(self):
+        """Removes the canvases containing the output grids, and associated labeling, if they exist."""
         if self.canvas:
             self.canvas['top'.casefold()].destroy()
             self.canvas['bottom'.casefold()].destroy()
