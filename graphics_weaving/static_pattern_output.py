@@ -1,5 +1,4 @@
-from graphics import *
-from from_pattern_draft.pattern_draft_to_output import convert_turns_to_numeric
+from graphics import Point, Text, Rectangle, GraphWin, color_rgb
 # Using graphics.py for the output
 
 
@@ -71,7 +70,12 @@ def display_output_pattern(pattern_structure, prepared_window, block_length, blo
             block_location = Point(block_x, block_y)
             block_end = Point(block_x + block_length, block_y + block_width)
             block = Rectangle(block_location, block_end)
-            block.setFill(thread)
+            if isinstance(thread, list):
+                block.setFill(color_rgb(r=thread[0], g=thread[1], b=thread[2]))
+            else:
+                col_vals = convert_timing_instruction_to_colour(thread)
+                block.setFill(color_rgb(r=col_vals[0], g=col_vals[1], b=col_vals[2]))
+
             show_object(block, prepared_window)
             block_y += block_width
         block_x += block_length
@@ -98,7 +102,9 @@ def display_pattern_draft(input_data, prepared_window, block_length, block_width
             block_location = Point(block_x, block_y)
             block_end = Point(block_x + block_length, block_y + block_width)
             block = Rectangle(block_location, block_end)
-            block.setFill(thread)
+        #    print(thread)
+#            col_vals = convert_timing_instruction_to_colour(thread)
+            block.setFill(color_rgb(r=thread[0], g=thread[1], b=thread[2]))
             show_object(block, prepared_window)
             block_y += block_width
         block_x += block_length
@@ -111,7 +117,7 @@ def regularise_turning_instructions(input_instructions, number_of_cards):
     """ If a turning instruction is just away or toward then is applies to all cards.
         Otherwise the instruction should be a list of length number of cards.
         This function expands the single value instructions to be lists of length number of cards so that all
-        entries have the same shape. Also changes the strings to be white for away and black for towards"""
+        entries have the same shape."""
     if not isinstance(number_of_cards, int):
         raise TypeError('number of cards needs to be an int')
     if not isinstance(input_instructions, list):
@@ -140,6 +146,18 @@ def convert_numeric_to_colours(input_number):
         return 'black'
     else:
         raise ValueError('Error in turn instructions (conversion)')
+
+
+def convert_timing_instruction_to_colour(instruction):
+    """Changes the strings to be white for away and black for towards"""
+    if not isinstance(instruction, str):
+        raise TypeError('Input to convert timing instruction to colour needs to be an str.')
+    if instruction == 'away':
+        return [255, 255, 255]
+    elif instruction == 'towards':
+        return [0, 0, 0]
+    else:
+        raise ValueError('Error in converting turn instructions to colours')
 
 
 def show_object(obj, window):

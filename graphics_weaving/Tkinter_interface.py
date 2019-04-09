@@ -44,6 +44,9 @@ class Interface:
         self.num_holes = len(self.input_data['Thread_colours'][0])
         self.num_cards = len(self.input_data['Threading_directions'])
         self.length_turning_instructions = len(self.input_data['Turning_instructions'])
+        self.input_data['Turning_instructions'] = \
+            regularise_turning_instructions(self.input_data['Turning_instructions'], self.num_cards)
+
         # Interface structure initialisation.
         self.draft_grid_state = []
         self.turning_grid_state = []
@@ -67,15 +70,19 @@ class Interface:
         self.save_btn = Button(self.window, text="Save pattern", command=self.save_clicked)
         self.set_dir_btn = Button(self.window, text="Set patterns directory", command=set_pattern_files_location)
         self.cards_update_btn = Button(self.window, text="Reset with new cards settings", command=self.change_cards)
-        self.num_cards_label = Label(self.window, text='number of cards', fg='white')
-        self.num_cards_spinbox = Spinbox(self.window, from_=2, to=20)
-        self.num_holes_label = Label(self.window, text='number of holes', fg='white')
-        self.num_holes_spinbox = Spinbox(self.window, from_=3, to=8)
-        self.num_turns_label = Label(self.window, text='number of turns', fg='white')
-        self.num_turns_spinbox = Spinbox(self.window, from_=2, to=20)
+        self.num_cards_label = Label(self.window, text='number of cards', fg='black')
+        self.num_cards_spinbox = Spinbox(self.window, from_=2, to=20,
+                                         values=len(self.input_data['Threading_directions']))
+        self.num_holes_label = Label(self.window, text='number of holes', fg='black')
+        self.num_holes_spinbox = Spinbox(self.window, from_=3, to=8,
+                                         values=len(self.input_data['Thread_colours'][0]))
+        self.num_turns_label = Label(self.window, text='number of turns', fg='black')
+        self.num_turns_spinbox = Spinbox(self.window, from_=2, to=20,
+                                         values=len(self.input_data['Turning_instructions']))
         self.place_controls()
 
         self.display_input_grids()
+        self.display_output_grids()
         self.window.mainloop()
 
     def place_controls(self):
